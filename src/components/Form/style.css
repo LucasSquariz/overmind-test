@@ -1,12 +1,30 @@
+.container{
+    max-height: 800px;
+    display: flex;    
+    align-items: center;    
+}
+
 .form{
-    width: 500px;
-    justify-content: center;
+    width: 500px;      
+    margin: 0 auto; 
 }
 
 .form-div{
-    display: flex;
-    flex-direction: column;
-    align-items: center;      
+    display: grid;
+    grid-template-columns: 2fr 1fr;         
     border: 1px solid black; 
     margin: 2rem auto;
+}
+
+.label-div{
+   display: flex;
+   flex-direction: column;   
+}
+
+.input-field{
+    margin: 0.75rem 0 0 0.75rem;
+}
+
+.label-field{
+    margin: 0.75rem 0 0 0.75rem;
 }
