@@ -280,8 +280,7 @@ const Form = () => {
                     </Typography>
                     <Container maxWidth="xl">
                         {/* @ts-ignore */}
-                        <form ref={form} className="form" onSubmit={sendEmail} autoComplete="off">
-                        {console.log(validUser)}
+                        <form ref={form} className="form" onSubmit={sendEmail} autoComplete="off">                        
                             <Stack
                                 direction="column"
                                 justifyContent='center'
