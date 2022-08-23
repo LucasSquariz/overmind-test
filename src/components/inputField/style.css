@@ -1,0 +1,10 @@
+.helperText-disabled {
+    display: none;
+}
+
+.helperText-enabled {
+    height: 8px;
+    @media(max-width: 310px; ) {
+        height: 30px;
+    }
+}

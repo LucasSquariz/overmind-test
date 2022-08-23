@@ -1,10 +1,13 @@
 import React, { useState, useRef } from 'react';
 import './style.css';
 import { Container } from '@mui/system';
-import { Stack, TextField } from '@mui/material';
+import { Stack, TextField, Button, Box, Typography, IconButton } from '@mui/material';
 import emailjs from '@emailjs/browser';
 import Swal from 'sweetalert2';
-import Cleave from 'cleave.js/react';
+import InputField from '../inputField';
+import CleaveInput from '../inputField/cleaveInput';
+import WbSunnyIcon from '@mui/icons-material/WbSunny';
+import NightlightIcon from '@mui/icons-material/Nightlight';
 
 interface User {
     firstName: string;
@@ -16,10 +19,18 @@ interface User {
     validFirstName: boolean;
     validLastName: boolean;
     validEmail: boolean;
-    validCelphone: boolean;
+    validTelephone: boolean;
     validPassword: boolean;
     validCPassword: boolean;
-    log: string;
+    darkMode: boolean;
+    errorMessage: {
+        firstNameErr: string,
+        lastNameErr: string,
+        emailErr: string,
+        telephoneErr: string,
+        passwordErr: string,
+        cPasswordErr: string,
+    }
 }
 
 const Form = () => {
@@ -34,11 +45,21 @@ const Form = () => {
         validFirstName: false,
         validLastName: false,
         validEmail: false,
-        validCelphone: false,
+        validTelephone: false,
         validPassword: false,
         validCPassword: false,
-        log: ''
+        darkMode: false,
+        errorMessage: {
+            firstNameErr: '',
+            lastNameErr: '',
+            emailErr: '',
+            telephoneErr: '',
+            passwordErr: '',
+            cPasswordErr: '',
+        }
     });
+
+    
 
     const form = useRef() as React.MutableRefObject<HTMLInputElement>;
     const firstName = useRef() as React.MutableRefObject<HTMLInputElement>;
@@ -46,94 +67,171 @@ const Form = () => {
     const telephone = useRef() as React.MutableRefObject<HTMLInputElement>;
     const password = useRef() as React.MutableRefObject<HTMLInputElement>;
     const cPassword = useRef() as React.MutableRefObject<HTMLInputElement>;
-    const email = useRef() as React.MutableRefObject<HTMLInputElement>;    
+    const email = useRef() as React.MutableRefObject<HTMLInputElement>;
 
-    const regexOnlyLetters = /^[a-zA-Z]*$/;    
+    const regexOnlyLetters = /^[a-zA-Z]*$/;
     const regexValidEmail = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-
 
     const customValidator = (input: any) => {
         switch (input) {
-            case firstName.current:
+            case 'firstName':
                 if (!regexOnlyLetters.test(validUser.firstName)) {
-                    input.setCustomValidity("Nome deve conter apenas letras.");
-                    input.reportValidity();
-                    setValidUser({ ...validUser, validFirstName: false });
-                    return input.blur();
+                    setValidUser({
+                        ...validUser,
+                        errorMessage: {
+                            ...validUser.errorMessage,
+                            firstNameErr: 'Nome deve conter apenas letras.'
+                        },
+                        validFirstName: false
+                    });
                 } else if (validUser.firstName.length > 8 || validUser.firstName.length < 2) {
-                    input.setCustomValidity("Nome deve ter entre 2-8 letras.");
-                    input.reportValidity();
-                    setValidUser({ ...validUser, validFirstName: false });
-                    return input.blur();
+                    setValidUser({
+                        ...validUser,
+                        errorMessage: {
+                            ...validUser.errorMessage,
+                            firstNameErr: 'Nome deve ter entre 2-8 letras.'
+                        },
+                        validFirstName: false
+                    });
                 } else {
-                    input.setCustomValidity('');
-                    setValidUser({ ...validUser, validFirstName: true });
+                    setValidUser({
+                        ...validUser,
+                        errorMessage: {
+                            ...validUser.errorMessage,
+                            firstNameErr: ''
+                        },
+                        validFirstName: true
+                    });
                 }
                 break;
 
-            case lastName.current:
+            case 'lastName':
                 if (!regexOnlyLetters.test(validUser.lastName)) {
-                    input.setCustomValidity("Sobrenome deve conter apenas letras.");
-                    input.reportValidity();
-                    setValidUser({ ...validUser, validLastName: false });
-                    return input.blur();
+                    setValidUser({
+                        ...validUser,
+                        errorMessage: {
+                            ...validUser.errorMessage,
+                            lastNameErr: 'Sobrenome deve conter apenas letras.'
+                        },
+                        validLastName: false
+                    });
                 } else if (validUser.lastName.length > 8 || validUser.lastName.length < 2) {
-                    input.setCustomValidity("Sobrenome deve ter entre 2-8 letras.");
-                    input.reportValidity();
-                    setValidUser({ ...validUser, validLastName: false });
-                    return input.blur();
+                    setValidUser({
+                        ...validUser,
+                        errorMessage: {
+                            ...validUser.errorMessage,
+                            lastNameErr: 'Sobrenome deve ter entre 2-8 letras.'
+                        },
+                        validLastName: false
+                    });
                 } else if (validUser.lastName.length <= 8 && validUser.lastName.length >= 2) {
-                    input.setCustomValidity('');
-                    setValidUser({ ...validUser, validLastName: true });
+                    setValidUser({
+                        ...validUser,
+                        errorMessage: {
+                            ...validUser.errorMessage,
+                            lastNameErr: ''
+                        },
+                        validLastName: true
+                    });
                 }
                 break;
-
-            case email.current:
+            case 'email':
                 if (!regexValidEmail.test(validUser.email)) {
-                    input.setCustomValidity("Email incorreto");
-                    input.reportValidity();
-                    setValidUser({ ...validUser, validEmail: false });
-                    return input.blur();
+                    setValidUser({
+                        ...validUser,
+                        errorMessage: {
+                            ...validUser.errorMessage,
+                            emailErr: 'Email inválido. Exemplo: nome@mail.com'
+                        },
+                        validEmail: false
+                    });
                 } else {
-                    input.setCustomValidity('');
-                    setValidUser({ ...validUser, validEmail: true });
+                    setValidUser({
+                        ...validUser,
+                        errorMessage: {
+                            ...validUser.errorMessage,
+                            emailErr: ''
+                        },
+                        validEmail: true
+                    });
                 }
                 break;
 
-            case telephone.current:
-                if (validUser.telephone.length != 14) {
-                    input.element.setCustomValidity("Telefone deve ter 11 digitos incluindo o ddd");
-                    input.element.reportValidity();
-                    setValidUser({ ...validUser, validCelphone: false });
-                    return input.element.blur();
+            case 'telephone':
+                if (validUser.telephone.length !== 14) {
+                    setValidUser({
+                        ...validUser,
+                        errorMessage: {
+                            ...validUser.errorMessage,
+                            telephoneErr: 'Telefone deve ter  pelo menos 11 digitos.'
+                        },
+                        validTelephone: false
+                    });
                 } else {
-                    input.element.setCustomValidity('');
-                    setValidUser({ ...validUser, validCelphone: true });
+                    setValidUser({
+                        ...validUser,
+                        errorMessage: {
+                            ...validUser.errorMessage,
+                            telephoneErr: ''
+                        },
+                        validTelephone: true
+                    });
                 }
                 break;
 
-            case password.current:
+            case 'password':
                 if (validUser.password.length < 6) {
-                    input.setCustomValidity("A senha deve ter pelo menos 6 digitos");
-                    input.reportValidity();
-                    setValidUser({ ...validUser, validPassword: false });
-                    return input.blur();
+                    setValidUser({
+                        ...validUser,
+                        errorMessage: {
+                            ...validUser.errorMessage,
+                            passwordErr: 'A senha deve ter pelo menos 6 digitos.'
+                        },
+                        validPassword: false
+                    });
                 } else {
-                    input.setCustomValidity('');
-                    setValidUser({ ...validUser, validPassword: true });
+                    setValidUser({
+                        ...validUser,
+                        errorMessage: {
+                            ...validUser.errorMessage,
+                            passwordErr: ''
+                        },
+                        validPassword: true
+                    });
                 }
                 break;
-
-            case cPassword.current:
-                if (validUser.password !== validUser.cPassword) {
-                    input.setCustomValidity("As senhas devem ser iguais.");
-                    input.reportValidity();
-                    setValidUser({ ...validUser, validCPassword: false });
-                    return input.blur();
+            case 'cPassword':
+                if (validUser.password !== validUser.cPassword || validUser.cPassword === '') {
+                    setValidUser({
+                        ...validUser,
+                        errorMessage: {
+                            ...validUser.errorMessage,
+                            cPasswordErr: 'As senhas devem ser iguais.'
+                        },
+                        validCPassword: false
+                    });
                 } else {
-                    input.setCustomValidity('');
-                    setValidUser({ ...validUser, validCPassword: true });
+                    setValidUser({
+                        ...validUser,
+                        errorMessage: {
+                            ...validUser.errorMessage,
+                            cPasswordErr: ''
+                        },
+                        validCPassword: true
+                    });
                 }
+                break;
+            default: ;
+        }
+    }
+
+    const toogleDarkMode = (type: string) => {
+        switch (type) {
+            case 'light':
+                setValidUser({ ...validUser, darkMode: false });
+                break;
+            case 'dark':
+                setValidUser({ ...validUser, darkMode: true });
                 break;
             default: ;
         }
@@ -144,7 +242,7 @@ const Form = () => {
         if (
             validUser.validFirstName
             && validUser.validLastName
-            && validUser.validCelphone
+            && validUser.validTelephone
             && validUser.validPassword
             && validUser.validCPassword
         ) {
@@ -162,98 +260,135 @@ const Form = () => {
                     console.log(error.text);
                 });
         }
-
     };
 
     return (
-        <div className="container">
+        <div className={validUser.darkMode ? "Singin-page-dark-mode" : "Singin-page-light-mode"}>
+            <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                minHeight="80vh"
+                flexDirection="column"
+            >
+                <Typography variant="h4" marginBottom={'1rem'}>
+                    Cadastro
+                </Typography>
+                <Container maxWidth="xs">
+                    {/* @ts-ignore */}
+                    <form ref={form} className="form" onSubmit={sendEmail} autoComplete="off">
+                        <Stack
+                            direction="column"
+                            justifyContent='center'
+                            alignItems='center'
+                            spacing={'1em'}>
+                            <InputField
+                                name={"Nome"}
+                                id={"firstName"}
+                                ref={firstName}
+                                value={validUser.firstName}
+                                type={'text'}
+                                error={!!validUser.errorMessage.firstNameErr}
+                                errorMessage={!!validUser.errorMessage.firstNameErr ? validUser.errorMessage.firstNameErr : ''}
+                                onChange={(e: any) => setValidUser({ ...validUser, firstName: e.target.value.trim() })}
+                                onBlur={() => customValidator('firstName')}
+                                darkMode={validUser.darkMode}
+                            />
+                            <InputField
+                                name={"Sobrenome"}
+                                id={"lastName"}
+                                ref={lastName}
+                                value={validUser.lastName}
+                                type={'text'}
+                                error={!!validUser.errorMessage.lastNameErr}
+                                errorMessage={!!validUser.errorMessage.lastNameErr ? validUser.errorMessage.lastNameErr : ''}
+                                onChange={(e: any) => setValidUser({ ...validUser, lastName: e.target.value.trim() })}
+                                onBlur={() => customValidator('lastName')}
+                                darkMode={validUser.darkMode}
+                            />
+                            <InputField
+                                name={"Email"}
+                                id={"email"}
+                                ref={email}
+                                value={validUser.email}
+                                type={'text'}
+                                error={!!validUser.errorMessage.emailErr}
+                                errorMessage={!!validUser.errorMessage.emailErr ? validUser.errorMessage.emailErr : ''}
+                                onChange={(e: any) => setValidUser({ ...validUser, email: e.target.value.trim() })}
+                                onBlur={() => customValidator('email')}
+                                darkMode={validUser.darkMode}
+                            />
+                            <TextField
+                                label={"Celular"}
+                                name={"telephone"}
+                                ref={telephone}
+                                value={validUser.telephone}
+                                type={'text'}
+                                error={!!validUser.errorMessage.telephoneErr}
+                                helperText={!!validUser.errorMessage.telephoneErr ? validUser.errorMessage.telephoneErr : ''}
+                                onChange={(e: any) => setValidUser({ ...validUser, telephone: e.target.value.trim() })}
+                                onBlur={() => customValidator('telephone')}
+                                required
+                                fullWidth
+                                style={validUser.darkMode ? {
+                                    background: 'white'
+                                } : {
+                                    background: 'white'
+                                }}
+                                InputProps={{
+                                    inputComponent: CleaveInput,
+                                }}
+                            />
+                            <p className={!!validUser.errorMessage.telephoneErr ? "helperText-disabled" : " helperText-enabled"}></p>
+                            <InputField
+                                name={"Senha"}
+                                id={"password"}
+                                ref={password}
+                                value={validUser.password}
+                                type={'password'}
+                                error={!!validUser.errorMessage.passwordErr}
+                                errorMessage={!!validUser.errorMessage.passwordErr ? validUser.errorMessage.passwordErr : ''}
+                                onChange={(e: any) => setValidUser({ ...validUser, password: e.target.value.trim() })}
+                                onBlur={() => customValidator('password')}
+                                darkMode={validUser.darkMode}
+                            />
+                            <InputField
+                                name={"Confirme a senha"}
+                                id={"cPassword"}
+                                ref={cPassword}
+                                value={validUser.cPassword}
+                                type={'password'}
+                                error={!!validUser.errorMessage.cPasswordErr}
+                                errorMessage={!!validUser.errorMessage.cPasswordErr ? validUser.errorMessage.cPasswordErr : ''}
+                                onChange={(e: any) => setValidUser({ ...validUser, cPassword: e.target.value.trim() })}
+                                onBlur={() => customValidator('cPassword')}
+                                darkMode={validUser.darkMode}
+                            />
+                            <Button variant="contained" type="submit" >Enviar</Button>
+                        </Stack>
+                    </form>
+                </Container>
+
+            </Box>
             <div>
-                <h3>{validUser.log}</h3>
+                <IconButton
+                    aria-label="lightMode"
+                    onClick={() => toogleDarkMode('light')}
+                    style={validUser.darkMode
+                        ? { color: 'white' }
+                        : { color: '' }}>
+                    <WbSunnyIcon />
+                </IconButton>
+                <IconButton
+                    aria-label="darkMode"
+                    onClick={() => toogleDarkMode('dark')}
+                    style={validUser.darkMode
+                        ? { color: 'white' }
+                        : { color: '' }}>
+                    <NightlightIcon />
+                </IconButton>
             </div>
-            {/* @ts-ignore */}
-            <form ref={form} className="form" onSubmit={sendEmail} autoComplete="off">                
-                <input autoComplete="false" name="hidden" type="text" style={{ display: 'none' }} />               
-                <div className="form-div">                    
-                    <div className="label-div">
-                        <label className="label-field" htmlFor="firstName" >Nome:</label>
-                        <label className="label-field" htmlFor="lastName" >Sobrenome:</label>
-                        <label className="label-field" htmlFor="email" >Email:</label>
-                        <label className="label-field" htmlFor="telephone" >Celular:</label>
-                        <label className="label-field" htmlFor="password" >Senha:</label>
-                        <label className="label-field" htmlFor="cPassword" >Confirme a senha:</label>
-                    </div>
-                    <div className="input-div">                       
-                        <input
-                            ref={firstName}
-                            onBlur={() => customValidator(firstName.current)}
-                            type="text"
-                            name="firstName"
-                            className="input-field"
-                            id="firstName"
-                            required
-                            value={validUser.firstName}
-                            onChange={(e) => setValidUser({ ...validUser, firstName: e.target.value.trim() })} />
-                        <input
-                            ref={lastName}
-                            onBlur={() => customValidator(lastName.current)}
-                            type="text"
-                            name="lastName"
-                            className="input-field"
-                            id="lastName"
-                            required
-                            value={validUser.lastName}
-                            onChange={(e) => setValidUser({ ...validUser, lastName: e.target.value.trim() })} />
-                        <input
-                            ref={email}
-                            onBlur={() => customValidator(email.current)}
-                            type="email"
-                            name="email"
-                            className="input-field"
-                            id="email"
-                            required
-                            value={validUser.email}
-                            onChange={(e) => setValidUser({ ...validUser, email: e.target.value })} />
-                        <Cleave
-                            // @ts-ignore
-                            ref={telephone}
-                            onBlur={() => customValidator(telephone.current)}
-                            type="text"
-                            name="telephone"
-                            className="input-field"
-                            id="telephone"
-                            required
-                            value={validUser.telephone}
-                            options={{
-                                delimiters: ['(', ')', '-'],
-                                blocks: [0, 2, 5, 4],
-                                numericOnly: true
-                            }}
-                            onChange={(e) => setValidUser({ ...validUser, telephone: e.target.value })} />
-                        <input
-                            ref={password}
-                            onBlur={() => customValidator(password.current)}
-                            type="password"
-                            name="password"
-                            className="input-field"
-                            id="password"
-                            required
-                            value={validUser.password}
-                            onChange={(e) => setValidUser({ ...validUser, password: e.target.value })} />
-                        <input
-                            ref={cPassword}
-                            onBlur={() => customValidator(cPassword.current)}
-                            type="password"
-                            name="password-confirmation"
-                            className="input-field"
-                            id="cPassword"
-                            required
-                            value={validUser.cPassword}
-                            onChange={(e) => setValidUser({ ...validUser, cPassword: e.target.value })} />
-                    </div>
-                    <input type="submit" value="Enviar" />
-                </div >
-            </form>
-        </div >
+        </div>
     )
 }
 
