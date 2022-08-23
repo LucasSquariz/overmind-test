@@ -83,12 +83,12 @@ const Form = () => {
                         },
                         validFirstName: false
                     });
-                } else if (validUser.firstName.length > 8 || validUser.firstName.length < 2) {
+                } else if (validUser.firstName.length > 12 || validUser.firstName.length < 2) {
                     setValidUser({
                         ...validUser,
                         errorMessage: {
                             ...validUser.errorMessage,
-                            firstNameErr: 'Nome deve ter entre 2-8 letras.'
+                            firstNameErr: 'Nome deve ter entre 2-12 letras.'
                         },
                         validFirstName: false
                     });
@@ -114,12 +114,12 @@ const Form = () => {
                         },
                         validLastName: false
                     });
-                } else if (validUser.lastName.length > 8 || validUser.lastName.length < 2) {
+                } else if (validUser.lastName.length > 12 || validUser.lastName.length < 2) {
                     setValidUser({
                         ...validUser,
                         errorMessage: {
                             ...validUser.errorMessage,
-                            lastNameErr: 'Sobrenome deve ter entre 2-8 letras.'
+                            lastNameErr: 'Sobrenome deve ter entre 2-12 letras.'
                         },
                         validLastName: false
                     });

@@ -1,25 +1,9 @@
 import React from 'react';
 import { TextField} from '@mui/material';
 import "./style.css";
+import { InputProps } from '../../types/index';
 
-interface Props {
-    name: string;
-    id: string;
-    ref: any;
-    value: string;
-    type: string;
-    error: boolean;
-    errorMessage: string;
-    onChange: (value: any) => void;
-    onBlur: (value: any) => void;
-    darkMode: boolean;
-    inputProps?: {
-        inputComponent: any;
-    };
-}
-
-const InputField = ({ name, id, ref, value, type, error, errorMessage, onChange, onBlur, inputProps, darkMode }: Props) => {
-    
+const InputField = ({ name, id, ref, value, type, error, errorMessage, onChange, onBlur, inputProps, darkMode }: InputProps) => {    
     return (
         <>
             <TextField
