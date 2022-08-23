@@ -1,3 +1,4 @@
+//Tipos dos objetos usados na aplicação
 export interface User {
     firstName: string;
     lastName: string;

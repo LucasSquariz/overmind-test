@@ -3,7 +3,7 @@ import { TextField} from '@mui/material';
 import "./style.css";
 import { InputProps } from '../../types/index';
 
-const InputField = ({ name, id, ref, value, type, error, errorMessage, onChange, onBlur, inputProps, darkMode }: InputProps) => {    
+const InputField = ({ name, id, ref, value, type, error, errorMessage, onChange, onBlur, darkMode }: InputProps) => {    
     return (
         <>
             <TextField

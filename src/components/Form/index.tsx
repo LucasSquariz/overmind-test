@@ -8,58 +8,39 @@ import InputField from '../inputField';
 import CleaveInput from '../inputField/cleaveInput';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import theme from './theme/index';
+import { User } from '../../types/index';
 
-interface User {
-    firstName: string;
-    lastName: string;
-    email: string;
-    telephone: string;
-    password: string;
-    cPassword: string;
-    validFirstName: boolean;
-    validLastName: boolean;
-    validEmail: boolean;
-    validTelephone: boolean;
-    validPassword: boolean;
-    validCPassword: boolean;
-    darkMode: boolean;
+// Estado inicial ddo formulário
+const initialState = {
+    firstName: '',
+    lastName: '',
+    email: '',
+    telephone: '',
+    password: '',
+    cPassword: '',
+    validFirstName: false,
+    validLastName: false,
+    validEmail: false,
+    validTelephone: false,
+    validPassword: false,
+    validCPassword: false,
+    darkMode: false,
     errorMessage: {
-        firstNameErr: string,
-        lastNameErr: string,
-        emailErr: string,
-        telephoneErr: string,
-        passwordErr: string,
-        cPasswordErr: string,
+        firstNameErr: '',
+        lastNameErr: '',
+        emailErr: '',
+        telephoneErr: '',
+        passwordErr: '',
+        cPasswordErr: '',
     }
 }
 
+// Função responsável por retornar o elemento form do HTML
 const Form = () => {    
-    const [validUser, setValidUser] = useState<User>({
-        firstName: '',
-        lastName: '',
-        email: '',
-        telephone: '',
-        password: '',
-        cPassword: '',
-        validFirstName: false,
-        validLastName: false,
-        validEmail: false,
-        validTelephone: false,
-        validPassword: false,
-        validCPassword: false,
-        darkMode: false,
-        errorMessage: {
-            firstNameErr: '',
-            lastNameErr: '',
-            emailErr: '',
-            telephoneErr: '',
-            passwordErr: '',
-            cPasswordErr: '',
-        }
-    });
+    //Setando o estado inicial com o Hook useState
+    const [validUser, setValidUser] = useState<User>(initialState);
 
-
-
+    //Criando constantes para manipular o DOM da página com o auxilio do hook useRef
     const form = useRef() as React.MutableRefObject<HTMLInputElement>;
     const firstName = useRef() as React.MutableRefObject<HTMLInputElement>;
     const lastName = useRef() as React.MutableRefObject<HTMLInputElement>;
@@ -68,10 +49,13 @@ const Form = () => {
     const cPassword = useRef() as React.MutableRefObject<HTMLInputElement>;
     const email = useRef() as React.MutableRefObject<HTMLInputElement>;
 
+    //RegEx responsáveis pela lógica de validação do email, do nome e sobrenome e email.
     const regexOnlyLetters = /^[a-zA-Z]*$/;
-    const regexValidEmail = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    const regexValidEmail = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
 
-    const customValidator = (input: any) => {
+    //Função responsável pela validação dos campos, alterando o tipo de erro conforme a necessidade.
+    //Recebe uma string com o nome do campo e executa a validação de acordo com as regras daquele campo.
+    const customValidator = (input: string) => {
         switch (input) {
             case 'firstName':
                 if (!regexOnlyLetters.test(validUser.firstName)) {
@@ -225,10 +209,13 @@ const Form = () => {
         }
     }
 
+    //Função responsável por ativar ou desativar o modo escuro(dark mode).
     const toogleDarkMode = () => {
         setValidUser({ ...validUser, darkMode: !validUser.darkMode });
     }
 
+    //Função responsável por enviar um email com as informações do formulário.
+    //Primeiro valida se todos os campos estão corretos e, então, envia o email.
     const sendEmail = (e: any) => {
         e.preventDefault();
         if (
@@ -261,6 +248,7 @@ const Form = () => {
         }
     };
 
+    //Retorno do componente Form que será renderizado.
     return (
         <div className={validUser.darkMode ? "Singin-page-dark-mode" : "Singin-page-light-mode"}>
             <ThemeProvider theme={theme}>
