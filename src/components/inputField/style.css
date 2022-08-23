@@ -1,10 +1,10 @@
 .helperText-disabled {
-    display: none;
+    display: none;    
 }
 
 .helperText-enabled {
-    height: 8px;
+    height: 1.25rem;
     @media(max-width: 310px; ) {
-        height: 30px;
+        height: 100px;       
     }
 }

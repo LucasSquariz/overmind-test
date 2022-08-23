@@ -1,13 +1,15 @@
 import React, { useState, useRef } from 'react';
 import './style.css';
 import { Container } from '@mui/system';
-import { Stack, TextField, Button, Box, Typography, IconButton } from '@mui/material';
+import { Stack, TextField, Button, Box, Typography, IconButton, createTheme, ThemeProvider } from '@mui/material';
 import emailjs from '@emailjs/browser';
 import Swal from 'sweetalert2';
 import InputField from '../inputField';
 import CleaveInput from '../inputField/cleaveInput';
-import WbSunnyIcon from '@mui/icons-material/WbSunny';
-import NightlightIcon from '@mui/icons-material/Nightlight';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+
+const themex = {"palette":{"common":{"black":"#000","white":"#fff"},"background":{"paper":"#fff","default":"#fafafa"},"primary":{"light":"#7986cb","main":"#3f51b5","dark":"#303f9f","contrastText":"#fff"},"secondary":{"light":"#ff4081","main":"#f50057","dark":"#c51162","contrastText":"#fff"},"error":{"light":"#e57373","main":"#f44336","dark":"#d32f2f","contrastText":"#fff"},"text":{"primary":"rgba(0, 0, 0, 0.87)","secondary":"rgba(0, 0, 0, 0.54)","disabled":"rgba(0, 0, 0, 0.38)","hint":"rgba(0, 0, 0, 0.38)"}}};
+const theme = createTheme(themex);
 
 interface User {
     firstName: string;
@@ -33,8 +35,7 @@ interface User {
     }
 }
 
-const Form = () => {
-
+const Form = () => {    
     const [validUser, setValidUser] = useState<User>({
         firstName: '',
         lastName: '',
@@ -59,7 +60,7 @@ const Form = () => {
         }
     });
 
-    
+
 
     const form = useRef() as React.MutableRefObject<HTMLInputElement>;
     const firstName = useRef() as React.MutableRefObject<HTMLInputElement>;
@@ -225,16 +226,8 @@ const Form = () => {
         }
     }
 
-    const toogleDarkMode = (type: string) => {
-        switch (type) {
-            case 'light':
-                setValidUser({ ...validUser, darkMode: false });
-                break;
-            case 'dark':
-                setValidUser({ ...validUser, darkMode: true });
-                break;
-            default: ;
-        }
+    const toogleDarkMode = () => {
+        setValidUser({ ...validUser, darkMode: !validUser.darkMode });
     }
 
     const sendEmail = (e: any) => {
@@ -264,131 +257,144 @@ const Form = () => {
 
     return (
         <div className={validUser.darkMode ? "Singin-page-dark-mode" : "Singin-page-light-mode"}>
-            <Box
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                minHeight="80vh"
-                flexDirection="column"
-            >
-                <Typography variant="h4" marginBottom={'1rem'}>
-                    Cadastro
-                </Typography>
-                <Container maxWidth="xs">
-                    {/* @ts-ignore */}
-                    <form ref={form} className="form" onSubmit={sendEmail} autoComplete="off">
-                        <Stack
-                            direction="column"
-                            justifyContent='center'
-                            alignItems='center'
-                            spacing={'1em'}>
-                            <InputField
-                                name={"Nome"}
-                                id={"firstName"}
-                                ref={firstName}
-                                value={validUser.firstName}
-                                type={'text'}
-                                error={!!validUser.errorMessage.firstNameErr}
-                                errorMessage={!!validUser.errorMessage.firstNameErr ? validUser.errorMessage.firstNameErr : ''}
-                                onChange={(e: any) => setValidUser({ ...validUser, firstName: e.target.value.trim() })}
-                                onBlur={() => customValidator('firstName')}
-                                darkMode={validUser.darkMode}
-                            />
-                            <InputField
-                                name={"Sobrenome"}
-                                id={"lastName"}
-                                ref={lastName}
-                                value={validUser.lastName}
-                                type={'text'}
-                                error={!!validUser.errorMessage.lastNameErr}
-                                errorMessage={!!validUser.errorMessage.lastNameErr ? validUser.errorMessage.lastNameErr : ''}
-                                onChange={(e: any) => setValidUser({ ...validUser, lastName: e.target.value.trim() })}
-                                onBlur={() => customValidator('lastName')}
-                                darkMode={validUser.darkMode}
-                            />
-                            <InputField
-                                name={"Email"}
-                                id={"email"}
-                                ref={email}
-                                value={validUser.email}
-                                type={'text'}
-                                error={!!validUser.errorMessage.emailErr}
-                                errorMessage={!!validUser.errorMessage.emailErr ? validUser.errorMessage.emailErr : ''}
-                                onChange={(e: any) => setValidUser({ ...validUser, email: e.target.value.trim() })}
-                                onBlur={() => customValidator('email')}
-                                darkMode={validUser.darkMode}
-                            />
-                            <TextField
-                                label={"Celular"}
-                                name={"telephone"}
-                                ref={telephone}
-                                value={validUser.telephone}
-                                type={'text'}
-                                error={!!validUser.errorMessage.telephoneErr}
-                                helperText={!!validUser.errorMessage.telephoneErr ? validUser.errorMessage.telephoneErr : ''}
-                                onChange={(e: any) => setValidUser({ ...validUser, telephone: e.target.value.trim() })}
-                                onBlur={() => customValidator('telephone')}
-                                required
-                                fullWidth
-                                style={validUser.darkMode ? {
-                                    background: 'white'
-                                } : {
-                                    background: 'white'
-                                }}
-                                InputProps={{
-                                    inputComponent: CleaveInput,
-                                }}
-                            />
-                            <p className={!!validUser.errorMessage.telephoneErr ? "helperText-disabled" : " helperText-enabled"}></p>
-                            <InputField
-                                name={"Senha"}
-                                id={"password"}
-                                ref={password}
-                                value={validUser.password}
-                                type={'password'}
-                                error={!!validUser.errorMessage.passwordErr}
-                                errorMessage={!!validUser.errorMessage.passwordErr ? validUser.errorMessage.passwordErr : ''}
-                                onChange={(e: any) => setValidUser({ ...validUser, password: e.target.value.trim() })}
-                                onBlur={() => customValidator('password')}
-                                darkMode={validUser.darkMode}
-                            />
-                            <InputField
-                                name={"Confirme a senha"}
-                                id={"cPassword"}
-                                ref={cPassword}
-                                value={validUser.cPassword}
-                                type={'password'}
-                                error={!!validUser.errorMessage.cPasswordErr}
-                                errorMessage={!!validUser.errorMessage.cPasswordErr ? validUser.errorMessage.cPasswordErr : ''}
-                                onChange={(e: any) => setValidUser({ ...validUser, cPassword: e.target.value.trim() })}
-                                onBlur={() => customValidator('cPassword')}
-                                darkMode={validUser.darkMode}
-                            />
-                            <Button variant="contained" type="submit" >Enviar</Button>
-                        </Stack>
-                    </form>
-                </Container>
-
-            </Box>
-            <div>
-                <IconButton
-                    aria-label="lightMode"
-                    onClick={() => toogleDarkMode('light')}
-                    style={validUser.darkMode
-                        ? { color: 'white' }
-                        : { color: '' }}>
-                    <WbSunnyIcon />
-                </IconButton>
-                <IconButton
-                    aria-label="darkMode"
-                    onClick={() => toogleDarkMode('dark')}
-                    style={validUser.darkMode
-                        ? { color: 'white' }
-                        : { color: '' }}>
-                    <NightlightIcon />
-                </IconButton>
-            </div>
-        </div>
+            <ThemeProvider theme={theme}>
+                <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    minHeight="80vh"
+                    flexDirection="column"
+                >
+                    <Typography variant="h4" marginBottom={'1rem'} marginTop={'3rem'} style={validUser.darkMode ? {
+                        color: 'white'
+                    } : {
+                        color: '#121212'
+                    }}>
+                        Cadastro
+                    </Typography>
+                    <Container maxWidth="xl">
+                        {/* @ts-ignore */}
+                        <form ref={form} className="form" onSubmit={sendEmail} autoComplete="off">
+                            <Stack
+                                direction="column"
+                                justifyContent='center'
+                                alignItems='center'
+                                spacing={'1em'}>
+                                <Container maxWidth="xs">
+                                    <InputField
+                                        name={"Nome"}
+                                        id={"firstName"}
+                                        ref={firstName}
+                                        value={validUser.firstName}
+                                        type={'text'}
+                                        error={!!validUser.errorMessage.firstNameErr}
+                                        errorMessage={!!validUser.errorMessage.firstNameErr ? validUser.errorMessage.firstNameErr : ''}
+                                        onChange={(e: any) => setValidUser({ ...validUser, firstName: e.target.value.trim() })}
+                                        onBlur={() => customValidator('firstName')}
+                                        darkMode={validUser.darkMode}
+                                    />
+                                </Container>
+                                <Container maxWidth="xs">
+                                    <InputField
+                                        name={"Sobrenome"}
+                                        id={"lastName"}
+                                        ref={lastName}
+                                        value={validUser.lastName}
+                                        type={'text'}
+                                        error={!!validUser.errorMessage.lastNameErr}
+                                        errorMessage={!!validUser.errorMessage.lastNameErr ? validUser.errorMessage.lastNameErr : ''}
+                                        onChange={(e: any) => setValidUser({ ...validUser, lastName: e.target.value.trim() })}
+                                        onBlur={() => customValidator('lastName')}
+                                        darkMode={validUser.darkMode}
+                                    />
+                                </Container>
+                                <Container maxWidth="xs">
+                                    <InputField
+                                        name={"Email"}
+                                        id={"email"}
+                                        ref={email}
+                                        value={validUser.email}
+                                        type={'text'}
+                                        error={!!validUser.errorMessage.emailErr}
+                                        errorMessage={!!validUser.errorMessage.emailErr ? validUser.errorMessage.emailErr : ''}
+                                        onChange={(e: any) => setValidUser({ ...validUser, email: e.target.value.trim() })}
+                                        onBlur={() => customValidator('email')}
+                                        darkMode={validUser.darkMode}
+                                    />
+                                </Container>
+                                <Container maxWidth="xs">
+                                    <TextField
+                                        label={"Celular"}
+                                        name={"telephone"}
+                                        ref={telephone}
+                                        value={validUser.telephone}
+                                        type={'text'}
+                                        error={!!validUser.errorMessage.telephoneErr}
+                                        helperText={!!validUser.errorMessage.telephoneErr ? validUser.errorMessage.telephoneErr : ''}
+                                        FormHelperTextProps={ validUser.darkMode ? {style: { backgroundColor: 'black' }} : {}}
+                                        onChange={(e: any) => setValidUser({ ...validUser, telephone: e.target.value.trim() })}
+                                        onBlur={() => customValidator('telephone')}
+                                        required
+                                        fullWidth
+                                        variant={'filled'}
+                                        style={validUser.darkMode ? {
+                                            background: 'white'
+                                        } : {
+                                            background: 'white'
+                                        }}
+                                        InputProps={{
+                                            inputComponent: CleaveInput,
+                                        }}
+                                    />
+                                    <p className={!!validUser.errorMessage.telephoneErr ? "helperText-disabled" : " helperText-enabled"}></p>
+                                </Container>
+                                <Container maxWidth="xs">
+                                    <InputField
+                                        name={"Senha"}
+                                        id={"password"}
+                                        ref={password}
+                                        value={validUser.password}
+                                        type={'password'}
+                                        error={!!validUser.errorMessage.passwordErr}
+                                        errorMessage={!!validUser.errorMessage.passwordErr ? validUser.errorMessage.passwordErr : ''}
+                                        onChange={(e: any) => setValidUser({ ...validUser, password: e.target.value.trim() })}
+                                        onBlur={() => customValidator('password')}
+                                        darkMode={validUser.darkMode}
+                                    />
+                                </Container>
+                                <Container maxWidth="xs">
+                                    <div className="teste-div">
+                                    <InputField
+                                        name={"Confirme a senha"}
+                                        id={"cPassword"}
+                                        ref={cPassword}
+                                        value={validUser.cPassword}
+                                        type={'password'}
+                                        error={!!validUser.errorMessage.cPasswordErr}
+                                        errorMessage={!!validUser.errorMessage.cPasswordErr ? validUser.errorMessage.cPasswordErr : ''}
+                                        onChange={(e: any) => setValidUser({ ...validUser, cPassword: e.target.value.trim() })}
+                                        onBlur={() => customValidator('cPassword')}
+                                        darkMode={validUser.darkMode}
+                                    />
+                                    </div>
+                                </Container>
+                                <Button variant="contained" type="submit" >Enviar</Button>
+                            </Stack>
+                        </form>
+                    </Container>
+                </Box>
+                <div className={validUser.darkMode ?"container-button-dark-mode" : ''}>
+                    <IconButton
+                        aria-label="lightMode"
+                        onClick={() => toogleDarkMode()}
+                        style={validUser.darkMode
+                            ? { color: 'white' }
+                            : { color: '' }}>
+                        <Brightness4Icon />
+                    </IconButton>
+                </div>
+            </ThemeProvider>
+        </div >
     )
 }
 

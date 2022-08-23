@@ -3,10 +3,8 @@ import './App.css';
 import Singin from './pages/Singin';
 
 function App() {
-  return (
-    <div className="App">     
+  return (        
       <Singin/>      
-    </div>
   );
 }
 

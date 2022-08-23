@@ -1,6 +1,5 @@
 import React from 'react';
-import { TextField } from '@mui/material';
-import Cleave from 'cleave.js/react';
+import { TextField} from '@mui/material';
 import "./style.css";
 
 interface Props {
@@ -20,6 +19,7 @@ interface Props {
 }
 
 const InputField = ({ name, id, ref, value, type, error, errorMessage, onChange, onBlur, inputProps, darkMode }: Props) => {
+
     
     return (
         <>
@@ -35,6 +35,8 @@ const InputField = ({ name, id, ref, value, type, error, errorMessage, onChange,
                 onBlur={onBlur}
                 required
                 fullWidth                
+                variant={'filled'}
+                FormHelperTextProps={ darkMode ? {style: { backgroundColor: 'black' }} : {}}
                 style={darkMode ? {
                     background: 'white'
                 } : {

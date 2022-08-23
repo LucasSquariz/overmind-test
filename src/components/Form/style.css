@@ -1,9 +1,24 @@
-.Singin-page-light-mode {
-    background-color: white;
-    min-height: 100%;
-}
 
 .Singin-page-dark-mode {
-    background-color: gray;
-    min-height: 100%;
+    background-color: #121212; 
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;     
+}
+
+.Singin-page-light-mode {
+    background-color: white;    
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;  
+}
+
+.MuiFormHelperText-root{    
+    margin: 0 !important;       
+}
+
+.css-ndtpj8-MuiStack-root>:not(style)+:not(style) {    
+    margin-top: 0.5rem !important;
 }
