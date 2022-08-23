@@ -19,7 +19,6 @@ interface Props {
 }
 
 const InputField = ({ name, id, ref, value, type, error, errorMessage, onChange, onBlur, inputProps, darkMode }: Props) => {
-
     
     return (
         <>

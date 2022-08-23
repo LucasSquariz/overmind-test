@@ -1,15 +1,13 @@
 import React, { useState, useRef } from 'react';
 import './style.css';
 import { Container } from '@mui/system';
-import { Stack, TextField, Button, Box, Typography, IconButton, createTheme, ThemeProvider } from '@mui/material';
+import { Stack, TextField, Button, Box, Typography, IconButton, ThemeProvider } from '@mui/material';
 import emailjs from '@emailjs/browser';
 import Swal from 'sweetalert2';
 import InputField from '../inputField';
 import CleaveInput from '../inputField/cleaveInput';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
-
-const themex = {"palette":{"common":{"black":"#000","white":"#fff"},"background":{"paper":"#fff","default":"#fafafa"},"primary":{"light":"#7986cb","main":"#3f51b5","dark":"#303f9f","contrastText":"#fff"},"secondary":{"light":"#ff4081","main":"#f50057","dark":"#c51162","contrastText":"#fff"},"error":{"light":"#e57373","main":"#f44336","dark":"#d32f2f","contrastText":"#fff"},"text":{"primary":"rgba(0, 0, 0, 0.87)","secondary":"rgba(0, 0, 0, 0.54)","disabled":"rgba(0, 0, 0, 0.38)","hint":"rgba(0, 0, 0, 0.38)"}}};
-const theme = createTheme(themex);
+import theme from './theme/index';
 
 interface User {
     firstName: string;
@@ -136,6 +134,7 @@ const Form = () => {
                     });
                 }
                 break;
+
             case 'email':
                 if (!regexValidEmail.test(validUser.email)) {
                     setValidUser({
@@ -235,6 +234,7 @@ const Form = () => {
         if (
             validUser.validFirstName
             && validUser.validLastName
+            && validUser.validEmail
             && validUser.validTelephone
             && validUser.validPassword
             && validUser.validCPassword
@@ -251,6 +251,12 @@ const Form = () => {
                     })
                 }, (error: any) => {
                     console.log(error.text);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Falha ao criar o cadastro, revise seus dados e tente novamente!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
                 });
         }
     };
@@ -264,7 +270,7 @@ const Form = () => {
                     alignItems="center"
                     minHeight="80vh"
                     flexDirection="column"
-                >
+                    >
                     <Typography variant="h4" marginBottom={'1rem'} marginTop={'3rem'} style={validUser.darkMode ? {
                         color: 'white'
                     } : {
@@ -275,6 +281,7 @@ const Form = () => {
                     <Container maxWidth="xl">
                         {/* @ts-ignore */}
                         <form ref={form} className="form" onSubmit={sendEmail} autoComplete="off">
+                        {console.log(validUser)}
                             <Stack
                                 direction="column"
                                 justifyContent='center'
